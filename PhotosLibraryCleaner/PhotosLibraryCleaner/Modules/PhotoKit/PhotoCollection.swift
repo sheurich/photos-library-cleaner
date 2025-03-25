@@ -157,9 +157,9 @@ class PhotoCollection: NSObject, ObservableObject {
 
         do {
             try await PHPhotoLibrary.shared().performChanges {
-                if let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection),
-                    let assets = (PHAsset.fetchAssets(in: assetCollection, options: nil) as AnyObject?) as! PHFetchResult<AnyObject>? {
-                    albumChangeRequest.removeAssets(assets)
+                if let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection) {
+                    let fetchResult = PHAsset.fetchAssets(in: assetCollection, options: nil)
+                    albumChangeRequest.removeAssets(fetchResult)
                 }
             }
 
