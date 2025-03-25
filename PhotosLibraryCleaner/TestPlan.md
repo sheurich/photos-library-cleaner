@@ -4,7 +4,7 @@ This document outlines the testing approach for the Photos Library Cleaner app.
 
 ## Manual Testing
 
-Since we don't have access to Xcode for running automated tests in this environment, the following manual tests should be performed:
+The following manual tests should be performed during development:
 
 ### Permission Handling Tests
 
@@ -47,9 +47,9 @@ Since we don't have access to Xcode for running automated tests in this environm
    - Test the scan results display
    - Verify all UI elements are properly laid out
 
-## Automated Testing (Future Implementation)
+## Automated Testing
 
-When Xcode is available, the following automated tests should be implemented:
+The following automated tests should be implemented using Xcode and run in GitHub Actions:
 
 ### Unit Tests
 
@@ -76,21 +76,25 @@ When Xcode is available, the following automated tests should be implemented:
    - Test scan initiation
    - Test results display
 
-## CI Integration (Future Implementation)
+## CI Integration with GitHub Actions
 
-When CI is configured, the following should be included:
+GitHub Actions with macOS runners will be used to automate testing and deployment:
 
 1. **Build Verification**
    - Verify the app builds successfully for both iOS and macOS
+   - Run on every pull request and push to main branch
 
 2. **Unit Test Suite**
-   - Run all unit tests
-   - Verify all tests pass
+   - Run all unit tests using Xcode on macOS runners
+   - Generate test coverage reports
+   - Fail the build if tests fail
 
 3. **UI Test Suite**
-   - Run all UI tests
-   - Verify all tests pass
+   - Run UI tests on iOS and macOS simulators
+   - Capture screenshots for visual verification
+   - Fail the build if tests fail
 
 4. **Code Quality Checks**
-   - Run SwiftLint
-   - Verify code meets quality standards
+   - Run SwiftLint for code style verification
+   - Enforce code quality standards
+   - Generate reports for code quality metrics

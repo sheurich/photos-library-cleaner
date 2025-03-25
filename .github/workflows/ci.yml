@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Install Dependencies
+      run: |
+        gem install xcpretty
+        brew install swiftlint
+    
+    - name: SwiftLint
+      run: swiftlint --strict
+      working-directory: PhotosLibraryCleaner
+    
+    - name: Build iOS
+      run: |
+        xcodebuild clean build -project PhotosLibraryCleaner/PhotosLibraryCleaner.xcodeproj -scheme PhotosLibraryCleaner -destination "platform=iOS Simulator,name=iPhone 14" | xcpretty
+    
+    - name: Build macOS
+      run: |
+        xcodebuild clean build -project PhotosLibraryCleaner/PhotosLibraryCleaner.xcodeproj -scheme PhotosLibraryCleaner -destination "platform=macOS" | xcpretty
+    
+    - name: Test iOS
+      run: |
+        xcodebuild test -project PhotosLibraryCleaner/PhotosLibraryCleaner.xcodeproj -scheme PhotosLibraryCleaner -destination "platform=iOS Simulator,name=iPhone 14" | xcpretty
+    
+    - name: Test macOS
+      run: |
+        xcodebuild test -project PhotosLibraryCleaner/PhotosLibraryCleaner.xcodeproj -scheme PhotosLibraryCleaner -destination "platform=macOS" | xcpretty
