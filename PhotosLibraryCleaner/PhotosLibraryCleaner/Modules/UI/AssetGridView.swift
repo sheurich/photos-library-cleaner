@@ -4,7 +4,7 @@ import Photos
 struct AssetGridView: View {
     var assets: [PHAsset]
     var columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
-    
+
     var body: some View {
         ScrollView {
             LazyVGrid(columns: columns, spacing: 10) {
@@ -22,7 +22,7 @@ struct AssetGridView: View {
 struct AssetThumbnailView: View {
     var asset: PHAsset
     @State private var image: Image?
-    
+
     var body: some View {
         ZStack {
             if let image = image {
@@ -41,14 +41,14 @@ struct AssetThumbnailView: View {
             loadImage()
         }
     }
-    
+
     private func loadImage() {
         let manager = PHImageManager.default()
         let option = PHImageRequestOptions()
         option.deliveryMode = .opportunistic
         option.resizeMode = .exact
         option.isSynchronous = false
-        
+
         manager.requestImage(
             for: asset,
             targetSize: CGSize(width: 200, height: 200),

@@ -6,23 +6,23 @@ import CoreImage
 
 class MLAnalysisManager {
     static let shared = MLAnalysisManager()
-    
+
     private init() {}
-    
+
     // MARK: - Placeholder for ML Analysis
-    
+
     // This class will be expanded in future phases to include:
     // - Blurry photo detection
     // - Duplicate/similarity detection
     // - Temporary content detection
     // - Event clustering
-    
+
     // MARK: - Basic Analysis Structure
-    
+
     func analyzeAsset(_ asset: PHAsset, completion: @escaping (AnalysisResult?, Error?) -> Void) {
         // Placeholder for future ML analysis implementation
         // This will be expanded in future phases
-        
+
         let result = AnalysisResult(
             assetId: asset.localIdentifier,
             isBlurry: false,
@@ -32,7 +32,7 @@ class MLAnalysisManager {
             eventGroupId: nil,
             qualityScore: 0.0
         )
-        
+
         completion(result, nil)
     }
 }

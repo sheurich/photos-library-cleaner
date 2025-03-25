@@ -5,12 +5,12 @@ struct DashboardView: View {
     @State private var isScanning = false
     @State private var scanProgress: Float = 0.0
     @State private var scanResults: ScanResults?
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 headerSection
-                
+
                 if isScanning {
                     scanningSection
                 } else if let results = scanResults {
@@ -23,34 +23,34 @@ struct DashboardView: View {
         }
         .navigationTitle("Dashboard")
     }
-    
+
     private var headerSection: some View {
         VStack(spacing: 10) {
             Text("Photos Library Cleaner")
                 .font(.largeTitle)
                 .bold()
-            
+
             Text("Clean up and organize your photo library")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
         }
         .padding(.vertical)
     }
-    
+
     private var scanningSection: some View {
         VStack(spacing: 15) {
             ProgressView(value: scanProgress, total: 1.0)
                 .progressViewStyle(LinearProgressViewStyle())
                 .frame(height: 10)
-            
+
             Text("Scanning your photo library...")
                 .font(.headline)
-            
+
             Text("This may take a few minutes depending on the size of your library")
                 .font(.caption)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-            
+
             Button(action: {
                 // Cancel scan functionality will be implemented in future phases
                 isScanning = false
@@ -65,7 +65,7 @@ struct DashboardView: View {
         .cornerRadius(10)
         .shadow(radius: 2)
     }
-    
+
     private var startScanSection: some View {
         VStack(spacing: 20) {
             Image(systemName: "photo.on.rectangle.angled")
@@ -73,14 +73,14 @@ struct DashboardView: View {
                 .scaledToFit()
                 .frame(width: 80, height: 80)
                 .foregroundColor(.blue)
-            
+
             Text("Ready to clean up your photo library?")
                 .font(.headline)
-            
+
             Text("Scan your library to find blurry photos, duplicates, and more.")
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
-            
+
             Button(action: {
                 startScan()
             }) {
@@ -98,12 +98,12 @@ struct DashboardView: View {
         .cornerRadius(10)
         .shadow(radius: 2)
     }
-    
+
     private func resultsSection(_ results: ScanResults) -> some View {
         VStack(spacing: 20) {
             Text("Scan Results")
                 .font(.headline)
-            
+
             HStack(spacing: 20) {
                 resultCard(
                     icon: "photo.fill.on.rectangle.fill",
@@ -111,7 +111,7 @@ struct DashboardView: View {
                     count: results.blurryPhotosCount,
                     color: .orange
                 )
-                
+
                 resultCard(
                     icon: "photo.on.rectangle",
                     title: "Duplicates",
@@ -119,7 +119,7 @@ struct DashboardView: View {
                     color: .blue
                 )
             }
-            
+
             HStack(spacing: 20) {
                 resultCard(
                     icon: "doc.text.image",
@@ -127,7 +127,7 @@ struct DashboardView: View {
                     count: results.screenshotsCount,
                     color: .green
                 )
-                
+
                 resultCard(
                     icon: "folder",
                     title: "Events",
@@ -135,7 +135,7 @@ struct DashboardView: View {
                     color: .purple
                 )
             }
-            
+
             Button(action: {
                 // Clean up functionality will be implemented in future phases
             }) {
@@ -150,17 +150,17 @@ struct DashboardView: View {
             .padding(.top)
         }
     }
-    
+
     private func resultCard(icon: String, title: String, count: Int, color: Color) -> some View {
         VStack {
             Image(systemName: icon)
                 .font(.system(size: 30))
                 .foregroundColor(color)
-            
+
             Text("\(count)")
                 .font(.title)
                 .bold()
-            
+
             Text(title)
                 .font(.caption)
                 .foregroundColor(.secondary)
@@ -171,11 +171,11 @@ struct DashboardView: View {
         .cornerRadius(10)
         .shadow(radius: 1)
     }
-    
+
     private func startScan() {
         isScanning = true
         scanProgress = 0.0
-        
+
         // Simulate scanning progress
         // This will be replaced with actual scanning in future phases
         Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { timer in
@@ -184,7 +184,7 @@ struct DashboardView: View {
             } else {
                 timer.invalidate()
                 isScanning = false
-                
+
                 // Mock results for UI demonstration
                 scanResults = ScanResults(
                     blurryPhotosCount: 15,

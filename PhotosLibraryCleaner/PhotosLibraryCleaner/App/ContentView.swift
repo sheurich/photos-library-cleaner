@@ -4,7 +4,7 @@ import Photos
 struct ContentView: View {
     @EnvironmentObject private var permissionManager: PhotoLibraryPermissionManager
     @StateObject private var coordinator = AppCoordinator()
-    
+
     var body: some View {
         NavigationView {
             Group {

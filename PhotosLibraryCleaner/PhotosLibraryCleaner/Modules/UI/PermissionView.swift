@@ -3,7 +3,7 @@ import Photos
 
 struct PermissionView: View {
     @ObservedObject var permissionManager: PhotoLibraryPermissionManager
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "photo.on.rectangle.angled")
@@ -12,15 +12,15 @@ struct PermissionView: View {
                 .frame(width: 100, height: 100)
                 .foregroundColor(.blue)
                 .padding()
-            
+
             Text("Photos Access Required")
                 .font(.title)
                 .bold()
-            
+
             Text("This app needs access to your photo library to help you clean up and organize your photos.")
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
-            
+
             Button(action: {
                 permissionManager.requestAuthorization()
             }) {
@@ -33,12 +33,12 @@ struct PermissionView: View {
                     .cornerRadius(10)
             }
             .padding()
-            
+
             if permissionManager.authorizationStatus == .denied {
                 VStack {
                     Text("Photo library access has been denied.")
                         .foregroundColor(.red)
-                    
+
                     #if os(iOS)
                     Button(action: {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
@@ -59,7 +59,7 @@ struct PermissionView: View {
                 }
                 .padding()
             }
-            
+
             Spacer()
         }
         .padding()
