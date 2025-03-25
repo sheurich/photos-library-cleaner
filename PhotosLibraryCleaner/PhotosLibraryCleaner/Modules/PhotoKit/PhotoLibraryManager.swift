@@ -24,7 +24,12 @@ class PhotoLibraryManager {
         completion(assets, nil)
     }
 
-    func fetchImage(for asset: PHAsset, targetSize: CGSize, contentMode: PHImageContentMode, completion: @escaping (UIImage?, [AnyHashable: Any]?) -> Void) {
+    func fetchImage(
+        for asset: PHAsset,
+        targetSize: CGSize,
+        contentMode: PHImageContentMode,
+        completion: @escaping (UIImage?, [AnyHashable: Any]?) -> Void
+    ) {
         let options = PHImageRequestOptions()
         options.deliveryMode = .highQualityFormat
         options.isNetworkAccessAllowed = true

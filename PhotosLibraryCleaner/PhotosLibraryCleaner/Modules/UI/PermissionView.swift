@@ -23,7 +23,7 @@ struct PermissionView: View {
 
             Button(action: {
                 permissionManager.requestAuthorization()
-            }) {
+            }, label: {
                 Text("Grant Access")
                     .bold()
                     .frame(minWidth: 200)
@@ -31,7 +31,7 @@ struct PermissionView: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-            }
+            })
             .padding()
 
             if permissionManager.authorizationStatus == .denied {
@@ -44,17 +44,17 @@ struct PermissionView: View {
                         if let url = URL(string: UIApplication.openSettingsURLString) {
                             UIApplication.shared.open(url)
                         }
-                    }) {
+                    }, label: {
                         Text("Open Settings")
                             .underline()
-                    }
+                    })
                     #elseif os(macOS)
                     Button(action: {
                         NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Photos")!)
-                    }) {
+                    }, label: {
                         Text("Open Settings")
                             .underline()
-                    }
+                    })
                     #endif
                 }
                 .padding()

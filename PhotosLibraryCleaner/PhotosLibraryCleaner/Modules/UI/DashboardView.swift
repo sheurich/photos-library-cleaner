@@ -54,10 +54,10 @@ struct DashboardView: View {
             Button(action: {
                 // Cancel scan functionality will be implemented in future phases
                 isScanning = false
-            }) {
+            }, label: {
                 Text("Cancel")
                     .foregroundColor(.red)
-            }
+            })
             .padding()
         }
         .padding()
@@ -83,7 +83,7 @@ struct DashboardView: View {
 
             Button(action: {
                 startScan()
-            }) {
+            }, label: {
                 Text("Start Scan")
                     .bold()
                     .frame(minWidth: 200)
@@ -91,7 +91,7 @@ struct DashboardView: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-            }
+            })
         }
         .padding()
         .background(Color(.systemBackground))
@@ -138,7 +138,7 @@ struct DashboardView: View {
 
             Button(action: {
                 // Clean up functionality will be implemented in future phases
-            }) {
+            }, label: {
                 Text("Clean Up Library")
                     .bold()
                     .frame(minWidth: 200)
@@ -146,7 +146,7 @@ struct DashboardView: View {
                     .background(Color.blue)
                     .foregroundColor(.white)
                     .cornerRadius(10)
-            }
+            })
             .padding(.top)
         }
     }
