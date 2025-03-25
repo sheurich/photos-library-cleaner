@@ -6,23 +6,23 @@ import Photos
 import os.log
 
 class PhotoCollection: NSObject, ObservableObject {
-    
+
     @Published var photoAssets: PhotoAssetCollection = PhotoAssetCollection(PHFetchResult<PHAsset>())
-    
+
     var identifier: String? {
         assetCollection?.localIdentifier
     }
-    
+
     var albumName: String?
-    
+
     var smartAlbumType: PHAssetCollectionSubtype?
-    
+
     let cache = CachedImageManager()
-    
+
     private var assetCollection: PHAssetCollection?
-    
+
     private var createAlbumIfNotFound = false
-    
+
     enum PhotoCollectionError: LocalizedError {
         case missingAssetCollection
         case missingAlbumName
@@ -33,7 +33,7 @@ class PhotoCollection: NSObject, ObservableObject {
         case createAlbumError(Error)
         case removeAllError(Error)
     }
-    
+
     init(albumNamed albumName: String, createIfNotFound: Bool = false) {
         self.albumName = albumName
         self.createAlbumIfNotFound = createIfNotFound
@@ -52,20 +52,20 @@ class PhotoCollection: NSObject, ObservableObject {
             await refreshPhotoAssets()
         }
     }
-    
+
     init(smartAlbum smartAlbumType: PHAssetCollectionSubtype) {
         self.smartAlbumType = smartAlbumType
         super.init()
     }
-    
+
     deinit {
         PHPhotoLibrary.shared().unregisterChangeObserver(self)
     }
-    
+
     func load() async throws {
-        
+
         PHPhotoLibrary.shared().register(self)
-        
+
         if let smartAlbumType = smartAlbumType {
             if let assetCollection = PhotoCollection.getSmartAlbum(subtype: smartAlbumType) {
                 logger.log("Loaded smart album of type: \(smartAlbumType.rawValue)")
@@ -77,84 +77,84 @@ class PhotoCollection: NSObject, ObservableObject {
                 throw PhotoCollectionError.unableToLoadSmartAlbum(smartAlbumType)
             }
         }
-        
+
         guard let name = albumName, !name.isEmpty else {
             logger.error("Unable to load an album without a name.")
             throw PhotoCollectionError.missingAlbumName
         }
-        
+
         if let assetCollection = PhotoCollection.getAlbum(named: name) {
             logger.log("Loaded photo album named: \(name)")
             self.assetCollection = assetCollection
             await refreshPhotoAssets()
             return
         }
-        
+
         guard createAlbumIfNotFound else {
             logger.error("Unable to find photo album named: \(name)")
             throw PhotoCollectionError.unableToFindAlbum(name)
         }
 
         logger.log("Creating photo album named: \(name)")
-        
+
         if let assetCollection = try? await PhotoCollection.createAlbum(named: name) {
             self.assetCollection = assetCollection
             await refreshPhotoAssets()
         }
     }
-    
+
     func addImage(_ imageData: Data) async throws {
         guard let assetCollection = self.assetCollection else {
             throw PhotoCollectionError.missingAssetCollection
         }
-        
+
         do {
             try await PHPhotoLibrary.shared().performChanges {
-                
+
                 let creationRequest = PHAssetCreationRequest.forAsset()
                 if let assetPlaceholder = creationRequest.placeholderForCreatedAsset {
                     creationRequest.addResource(with: .photo, data: imageData, options: nil)
-                    
+
                     if let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection), assetCollection.canPerform(.addContent) {
                         let fastEnumeration = NSArray(array: [assetPlaceholder])
                         albumChangeRequest.addAssets(fastEnumeration)
                     }
                 }
             }
-            
+
             await refreshPhotoAssets()
-            
+
         } catch let error {
             logger.error("Error adding image to photo library: \(error.localizedDescription)")
             throw PhotoCollectionError.addImageError(error)
         }
     }
-    
+
     func removeAsset(_ asset: PhotoAsset) async throws {
         guard let assetCollection = self.assetCollection else {
             throw PhotoCollectionError.missingAssetCollection
         }
-        
+
         do {
             try await PHPhotoLibrary.shared().performChanges {
                 if let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection) {
                     albumChangeRequest.removeAssets([asset as Any] as NSArray)
                 }
             }
-            
+
             await refreshPhotoAssets()
-            
+
         } catch let error {
             logger.error("Error removing all photos from the album: \(error.localizedDescription)")
             throw PhotoCollectionError.removeAllError(error)
         }
     }
-    
+
     func removeAll() async throws {
         guard let assetCollection = self.assetCollection else {
             throw PhotoCollectionError.missingAssetCollection
         }
-        
+
         do {
             try await PHPhotoLibrary.shared().performChanges {
                 if let albumChangeRequest = PHAssetCollectionChangeRequest(for: assetCollection),
@@ -162,15 +162,15 @@ class PhotoCollection: NSObject, ObservableObject {
                     albumChangeRequest.removeAssets(assets)
                 }
             }
-            
+
             await refreshPhotoAssets()
-            
+
         } catch let error {
             logger.error("Error removing all photos from the album: \(error.localizedDescription)")
             throw PhotoCollectionError.removeAllError(error)
         }
     }
-    
+
     private func refreshPhotoAssets(_ fetchResult: PHFetchResult<PHAsset>? = nil) async {
 
         var newFetchResult = fetchResult
@@ -182,7 +182,7 @@ class PhotoCollection: NSObject, ObservableObject {
                 newFetchResult = fetchResult
             }
         }
-        
+
         if let newFetchResult = newFetchResult {
             await MainActor.run {
                 photoAssets = PhotoAssetCollection(newFetchResult)
@@ -196,20 +196,20 @@ class PhotoCollection: NSObject, ObservableObject {
         let collections = PHAssetCollection.fetchAssetCollections(withLocalIdentifiers: [identifier], options: fetchOptions)
         return collections.firstObject
     }
-    
+
     private static func getAlbum(named name: String) -> PHAssetCollection? {
         let fetchOptions = PHFetchOptions()
         fetchOptions.predicate = NSPredicate(format: "title = %@", name)
         let collections = PHAssetCollection.fetchAssetCollections(with: .album, subtype: .any, options: fetchOptions)
         return collections.firstObject
     }
-    
+
     private static func getSmartAlbum(subtype: PHAssetCollectionSubtype) -> PHAssetCollection? {
         let fetchOptions = PHFetchOptions()
         let collections = PHAssetCollection.fetchAssetCollections(with: .smartAlbum, subtype: subtype, options: fetchOptions)
         return collections.firstObject
     }
-    
+
     private static func createAlbum(named name: String) async throws -> PHAssetCollection? {
         var collectionPlaceholder: PHObjectPlaceholder?
         do {
@@ -231,7 +231,7 @@ class PhotoCollection: NSObject, ObservableObject {
 }
 
 extension PhotoCollection: PHPhotoLibraryChangeObserver {
-    
+
     func photoLibraryDidChange(_ changeInstance: PHChange) {
         Task { @MainActor in
             guard let changes = changeInstance.changeDetails(for: self.photoAssets.fetchResult) else { return }
