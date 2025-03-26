@@ -1,56 +1,17 @@
-# Photos Library Cleaner
+# Previewing the Camera Output
 
-A Swift package that provides functionality for cleaning and organizing photo libraries on iOS and macOS.
+Preview the output from the camera.
 
-## Features
+## Overview
 
-- Cross-platform support for iOS and macOS
-- Example implementation of duplicate photo detection
-- SwiftUI interface that works on both platforms
+Your camera’s video output sends a continuous stream of individual images (video frames). You display these in a viewfinder so you can see exactly what the camera is looking at before composing your shot and taking a photo.
 
-## Requirements
+Discover more about how this works. 🎞
 
-- iOS 15.0+ / macOS 12.0+
-- Swift 5.5+
+## Tutorial
 
-## Installation
+[View a tutorial on this sample.](doc://com.apple.documentation/tutorials/sample-apps/CapturingPhotos-CameraPreview)
 
-### Swift Package Manager
+## Running the Sample Code Project
 
-Add the following to your `Package.swift` file:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/sheurich/photos-library-cleaner.git", from: "0.1.0")
-]
-```
-
-## Usage
-
-```swift
-import PhotosLibraryCleaner
-
-// Initialize the cleaner
-let cleaner = PhotosLibraryCleaner()
-
-// Get the current platform
-let platform = cleaner.getPlatformName()
-print("Running on \(platform)")
-
-// Find duplicate photos
-let duplicates = cleaner.findDuplicatePhotos(count: 5)
-print("Found \(duplicates.count) duplicate photos")
-```
-
-## SwiftUI Example
-
-```swift
-import SwiftUI
-import PhotosLibraryCleaner
-
-struct ContentView: View {
-    var body: some View {
-        PhotosLibraryCleanerView()
-    }
-}
-```
+Before running this sample on a physical device, select a Development Team under the Signing & Capabilities section in the project editor.
