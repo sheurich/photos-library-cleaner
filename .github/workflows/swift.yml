@@ -1,0 +1,36 @@
+name: Swift
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Swift
+      uses: swift-actions/setup-swift@v1
+      with:
+        swift-version: '5.5'
+    
+    - name: Build for macOS
+      run: |
+        cd PhotosLibraryCleaner
+        swift build -c release
+      
+    - name: Build for iOS
+      run: |
+        cd PhotosLibraryCleaner
+        # Use xcodebuild for iOS since swift build doesn't support iOS directly
+        xcodebuild -scheme PhotosLibraryCleaner -destination 'platform=iOS Simulator,name=iPhone 13' build
+      
+    - name: Run Tests
+      run: |
+        cd PhotosLibraryCleaner
+        swift test
